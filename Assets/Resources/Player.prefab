@@ -210,8 +210,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pv: {fileID: 4903849987688605473}
   playerPosition: 0
-  resourceText: {fileID: 0}
-  turnButton: {fileID: 0}
 --- !u!1 &1849460157474226859
 GameObject:
   m_ObjectHideFlags: 0

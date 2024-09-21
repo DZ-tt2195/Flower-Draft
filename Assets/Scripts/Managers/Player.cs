@@ -24,8 +24,9 @@ public class Player : UndoSource
 
     [Foldout("Choices", true)]
         public int choice { get; private set; }
-    List<NextStep> listOfSteps = new();
-    public Stack<List<Action>> decisionReact = new();
+        public Card chosenCard { get; private set; }
+        List<NextStep> listOfSteps = new();
+        public Stack<List<Action>> decisionReact = new();
 
     #endregion
 
@@ -144,7 +145,7 @@ public class Player : UndoSource
     public void ChooseButton(string[] possibleChoices, string changeInstructions, Action action)
     {
         Popup popup = Instantiate(CarryVariables.instance.textPopup);
-        popup.StatsSetup(this, new(0, -500), "Choices");
+        popup.StatsSetup(this, "Choices", new(0, -500));
 
         for (int i = 0; i < possibleChoices.Length; i++)
             popup.AddTextButton(possibleChoices[i]);
@@ -157,10 +158,11 @@ public class Player : UndoSource
         popup.WaitForChoice();
     }
 
-    public void DecisionMade(int value)
+    public void DecisionMade(int value, Card card = null)
     {
         //Debug.Log($"decision: {value}");
         choice = value;
+        this.chosenCard = card;
         if (value == CarryVariables.instance.undecided)
         {
             decisionReact.Push(new());
@@ -173,9 +175,7 @@ public class Player : UndoSource
                 foreach (Action action in next)
                     action();
             }
-            catch
-            {
-            }
+            catch{}
         }
     }
 

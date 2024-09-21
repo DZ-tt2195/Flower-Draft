@@ -18,13 +18,12 @@ public class CarryVariables : MonoBehaviour
 
     [Foldout("Right click", true)]
     [SerializeField] Transform rightClickBackground;
-    [SerializeField] Image cardImage;
+    [SerializeField] CardLayout rightClickCard;
 
     [Foldout("Misc", true)]
     [SerializeField] Transform permanentCanvas;
     [ReadOnly] public Dictionary<string, MethodInfo> dictionary = new();
     public Sprite faceDownSprite;
-    [SerializeField] Image transitionImage;
     public bool debug { get; private set; }
     public int undecided { get; private set; }
 
@@ -44,34 +43,16 @@ public class CarryVariables : MonoBehaviour
         }
     }
 
-    public IEnumerator TransitionImage(float time)
-    {
-        float elapsedTime = 0f;
-        transitionImage.SetAlpha(1);
-        transitionImage.gameObject.SetActive(true);
-
-        while (elapsedTime < time)
-        {
-            transitionImage.SetAlpha(1-(elapsedTime / time));
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        transitionImage.SetAlpha(0);
-        transitionImage.gameObject.SetActive(false);
-    }
-
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
             rightClickBackground.gameObject.SetActive(false);
     }
 
-    public void RightClickDisplay(Sprite bigArt)
+    public void RightClickDisplay(Card card, Color color, float alpha)
     {
         rightClickBackground.gameObject.SetActive(true);
-        cardImage.transform.gameObject.SetActive(true);
-        cardImage.sprite = bigArt;
+        rightClickCard.FillInCards(card, color, alpha);
     }
 
     public void DebugMode(bool confirm)
