@@ -28,4 +28,9 @@ public class Card : UndoSource
     {
         cardID = ID;
     }
+
+    public virtual int Scoring(InPlay playArea)
+    {
+        return value;
+    }
 }

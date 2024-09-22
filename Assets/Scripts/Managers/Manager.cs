@@ -36,9 +36,7 @@ public class Manager : UndoSource
     [Foldout("Players", true)]
     [ReadOnly] public List<Player> playersInOrder = new();
     public Transform storePlayers { get; private set; }
-
-    [Foldout("Turn", true)]
-    [ReadOnly] public int turnNumber { get; private set; }
+    Player currentPlayer;
 
     [Foldout("Ending", true)]
     [SerializeField] Transform endScreen;
@@ -72,20 +70,20 @@ public class Manager : UndoSource
 
     void Start()
     {
-        for (int i = 0; i<deck.childCount; i++)
-        {
-            Transform next = deck.transform.GetChild(i);
-            next.localPosition = new(250 * i, 0);
-            next.gameObject.AddComponent(Type.GetType(next.name));
-            Card card = next.GetComponent<Card>();
-            card.GetCardID(i);
-            listOfCards.Add(card);
-        }
-
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.Instantiate(CarryVariables.instance.playerPrefab.name, new Vector3(-10000, -10000, 0), new Quaternion());
+            PhotonNetwork.Instantiate(CarryVariables.instance.playerPrefab.name, new(-10000, -10000, 0), new());
             StartCoroutine(Setup());
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                for (int i = 0; i < CarryVariables.instance.cardNames.Count; i++)
+                {
+                    GameObject next = PhotonNetwork.Instantiate(CarryVariables.instance.cardPrefab.name, new(-10000, -10000, 0), new());
+                    next.transform.SetParent(deck);
+                    next.name = CarryVariables.instance.cardNames[i];
+                }
+            }
         }
     }
 
@@ -126,11 +124,38 @@ public class Manager : UndoSource
 
     void GetPlayers()
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            for (int i = 0; i < deck.childCount; i++)
+            {
+                PhotonView next = deck.GetChild(i).GetComponent<PhotonView>();
+                MultiFunction(nameof(AddCard), RpcTarget.All, new object[2] { next.ViewID, next.name });
+            }
+            deck.Shuffle();
+        }
+
+        storePlayers.Shuffle();
         for (int i = 0; i<storePlayers.childCount; i++)
         {
             Player player = storePlayers.transform.GetChild(i).GetComponent<Player>();
+            currentPlayer = player;
             MultiFunction(nameof(AddPlayer), RpcTarget.All, new object[2] { player.name, i });
         }
+        MultiFunction(nameof(NextTurn), RpcTarget.MasterClient);
+    }
+
+    [PunRPC]
+    void AddCard(int ID, string name)
+    {
+        GameObject next = PhotonView.Find(ID).gameObject;
+        next.name = name;
+        next.transform.SetParent(deck);
+        next.transform.localPosition = new(250 * listOfCards.Count, 0);
+
+        next.AddComponent(Type.GetType(name));
+        Card card = next.GetComponent<Card>();
+        card.GetCardID(listOfCards.Count);
+        listOfCards.Add(card);
     }
 
     [PunRPC]
@@ -141,115 +166,23 @@ public class Manager : UndoSource
         nextPlayer.AssignInfo(position);
     }
 
-    int OtherRandom(int max, int notThis)
-    {
-        if (max <= 1)
-            return 0;
-
-        int answer = notThis;
-        while (answer == notThis)
-            answer = UnityEngine.Random.Range(0, max);
-        return answer;
-    }
-
-    (int, int) TwoDifferentRandom(int max)
-    {
-        if (max <= 1)
-            return (0, 0);
-
-        if (max == 2)
-            return (0, 1);
-
-        int one = 0;
-        int two = 0;
-
-        while (one == two)
-        {
-            one = UnityEngine.Random.Range(0, max);
-            two = UnityEngine.Random.Range(0, max);
-        }
-        return (one, two);
-    }
-
     #endregion
 
 #region Gameplay
 
-    [PunRPC]
-    public void UpdateTurnNumber(int newNumber)
-    {
-        turnNumber = newNumber;
-    }
-
     public void Instructions(string text)
     {
-        instructions.text = KeywordTooltip.instance.EditText(text);
+        instructions.text = (text);
+    }
+
+    [PunRPC]
+    public void NextTurn()
+    {
+        currentPlayer = playersInOrder[(currentPlayer.playerPosition + 1) % playersInOrder.Count];
+        currentPlayer.MultiFunction(nameof(Player.RequestDraw), RpcTarget.MasterClient, new object[1] {2});
     }
 
     #endregion
-
-#region Seasons
-
-    [ReadOnly] List<int> springTurns = new() { 1, 5, 9 };
-    [ReadOnly] List<int> summerTurns = new() { 2, 6, 10 };
-    [ReadOnly] List<int> autumnTurns = new() { 3, 7, 11 };
-    [ReadOnly] List<int> winterTurns = new() { 4, 8, 12 };
-
-    public int CurrentYearNumber()
-    {
-        int currentNumber = CurrentSeasonNumber("Spring");
-        if (currentNumber >= 0)
-            return currentNumber;
-
-        currentNumber = CurrentSeasonNumber("Summer");
-        if (currentNumber >= 0)
-            return currentNumber;
-
-        currentNumber = CurrentSeasonNumber("Autumn");
-        if (currentNumber >= 0)
-            return currentNumber;
-
-        currentNumber = CurrentSeasonNumber("Winter");
-        if (currentNumber >= 0)
-            return currentNumber;
-
-        return -1;
-    }
-
-    public int CurrentSeasonNumber(string season)
-    {
-        return season switch
-        {
-            "Spring" => springTurns.IndexOf(turnNumber)+1,
-            "Summer" => summerTurns.IndexOf(turnNumber)+1,
-            "Autumn" => autumnTurns.IndexOf(turnNumber)+1,
-            "Winter" => winterTurns.IndexOf(turnNumber)+1,
-            _ => -1,
-        };
-    }
-
-    public string CurrentSeasonText()
-    {
-        int currentNumber = CurrentSeasonNumber("Spring");
-        if (currentNumber >= 1)
-            return $"Spring {currentNumber}";
-
-        currentNumber = CurrentSeasonNumber("Summer");
-        if (currentNumber >= 1)
-            return $"Summer {currentNumber}";
-
-        currentNumber = CurrentSeasonNumber("Autumn");
-        if (currentNumber >= 1)
-            return $"Autumn {currentNumber}";
-
-        currentNumber = CurrentSeasonNumber("Winter");
-        if (currentNumber >= 1)
-            return $"Winter {currentNumber}";
-
-        return "failed";
-    }
-
-#endregion
 
 #region Game End
 

@@ -12,7 +12,7 @@ using System;
 [RequireComponent(typeof(PhotonView))]
 public class UndoSource : MonoBehaviour
 {
-    public Dictionary<string, MethodInfo> methodDictionary = new();
+    Dictionary<string, MethodInfo> methodDictionary = new();
     [ReadOnly] public PhotonView pv;
 
     public void MultiFunction(string methodName, RpcTarget affects, object[] parameters = null)

@@ -106,7 +106,7 @@ public class Player : UndoSource
 #region Turn
 
     [PunRPC]
-    public void RequestDraw(int cardsToDraw, int logged)
+    public void RequestDraw(int cardsToDraw)
     {
         int[] listOfCardIDs = new int[cardsToDraw];
 

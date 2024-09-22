@@ -29,26 +29,16 @@ public class Popup : MonoBehaviour
     internal void StatsSetup(Player player, string header, Vector2 position)
     {
         decidingPlayer = player;
-        this.textbox.text = KeywordTooltip.instance.EditText(header);
+        this.textbox.text = (header);
         this.transform.SetParent(canvas.transform);
         this.transform.localPosition = position;
         this.transform.localScale = new Vector3(1, 1, 1);
     }
 
-    internal void DestroyButton(int sibling)
-    {
-        Button toDestroy = this.transform.GetChild(2).transform.GetChild(sibling).GetComponent<Button>();
-        buttonsInCollector.Remove(toDestroy);
-        Destroy(toDestroy.gameObject);
-
-        if (this.transform.GetChild(2).transform.childCount <= 1)
-            Destroy(this.gameObject);
-    }
-
     internal void AddTextButton(string text)
     {
         Button nextButton = Instantiate(textButton, this.transform.GetChild(1));
-        nextButton.transform.GetChild(0).GetComponent<TMP_Text>().text = KeywordTooltip.instance.EditText(text);
+        nextButton.transform.GetChild(0).GetComponent<TMP_Text>().text = (text);
 
         nextButton.interactable = true;
         int buttonNumber = buttonsInCollector.Count;

@@ -71,16 +71,12 @@ public class Log : UndoSource
         if (indent < 0)
             return;
 
-        //Debug.Log($"add to log: {logText}");
-
         LogText newText = Instantiate(textBoxClone, RT.transform);
         newText.name = $"Log {RT.transform.childCount}";
         newText.textBox.text = "";
         for (int i = 0; i < indent; i++)
             newText.textBox.text += "     ";
         newText.textBox.text += string.IsNullOrEmpty(logText) ? "" : char.ToUpper(logText[0]) + logText[1..];
-
-        newText.textBox.text = KeywordTooltip.instance.EditText(newText.textBox.text);
         ChangeScrolling();
     }
 
