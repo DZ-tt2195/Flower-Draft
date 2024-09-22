@@ -50,6 +50,10 @@ MonoBehaviour:
   - PreserveText
   - ShareSteps
   - UpdateTurnNumber
+  - ChooseFaceDown
+  - PlayCard
+  - RequestDraw
+  - TakeCard
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

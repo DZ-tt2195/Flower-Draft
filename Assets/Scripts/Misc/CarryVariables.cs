@@ -14,6 +14,7 @@ public class CarryVariables : MonoBehaviour
     [Foldout("Prefabs", true)]
     public Player playerPrefab;
     public Popup textPopup;
+    public Popup cardPopup;
     public Button playerButtonPrefab;
 
     [Foldout("Right click", true)]
@@ -24,7 +25,6 @@ public class CarryVariables : MonoBehaviour
     [SerializeField] Transform permanentCanvas;
     [ReadOnly] public Dictionary<string, MethodInfo> dictionary = new();
     public Sprite faceDownSprite;
-    public bool debug { get; private set; }
     public int undecided { get; private set; }
 
     private void Awake()
@@ -34,7 +34,6 @@ public class CarryVariables : MonoBehaviour
             instance = this;
             Application.targetFrameRate = 60;
             undecided = -100000;
-            debug = false;
             DontDestroyOnLoad(this.gameObject);
         }
         else
@@ -49,14 +48,9 @@ public class CarryVariables : MonoBehaviour
             rightClickBackground.gameObject.SetActive(false);
     }
 
-    public void RightClickDisplay(Card card, Color color, float alpha)
+    public void RightClickDisplay(Card card, float alpha)
     {
         rightClickBackground.gameObject.SetActive(true);
-        rightClickCard.FillInCards(card, color, alpha);
-    }
-
-    public void DebugMode(bool confirm)
-    {
-        debug = confirm;
+        rightClickCard.FillInCards(card, alpha);
     }
 }

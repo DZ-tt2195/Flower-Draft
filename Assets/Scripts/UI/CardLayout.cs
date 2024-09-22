@@ -11,6 +11,7 @@ public class CardLayout : MonoBehaviour, IPointerClickHandler
     CanvasGroup cg;
     public Image background { get; private set; }
     TMP_Text titleText;
+    TMP_Text valueText;
     TMP_Text description;
     Card myCard;
 
@@ -19,6 +20,7 @@ public class CardLayout : MonoBehaviour, IPointerClickHandler
         cg = transform.Find("Canvas Group").GetComponent<CanvasGroup>();
         background = cg.transform.Find("Background").GetComponent<Image>();
         titleText = cg.transform.Find("Title").GetComponent<TMP_Text>();
+        valueText = cg.transform.Find("Value").GetComponent<TMP_Text>();
         description = cg.transform.Find("Description").GetComponent<TMP_Text>();
     }
 
@@ -26,16 +28,22 @@ public class CardLayout : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            CarryVariables.instance.RightClickDisplay(this.myCard, this.background.color, cg.alpha);
+            CarryVariables.instance.RightClickDisplay(this.myCard, cg.alpha);
         }
     }
 
-    public void FillInCards(Card card, Color color, float alpha)
+    public void FillInCards(Card card, float alpha)
     {
         myCard = card;
-        background.color = color;
+        background.color = card.myColor;
         titleText.text = card.name;
+        valueText.text = $"{card.value} VP";
         description.text = card.textBox;
+        ChangeAlpha(alpha);
+    }
+
+    public void ChangeAlpha(float alpha)
+    {
         cg.alpha = alpha;
     }
 }

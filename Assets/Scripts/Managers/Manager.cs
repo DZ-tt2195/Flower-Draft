@@ -24,6 +24,10 @@ public class Manager : UndoSource
     [Foldout("Text", true)]
     [SerializeField] TMP_Text instructions;
 
+    [Foldout("Cards", true)]
+    public Transform deck;
+    [ReadOnly] public List<Card> listOfCards = new();
+
     [Foldout("Animation", true)]
     public float opacity { get; private set;}
     bool decrease = true;
@@ -68,15 +72,19 @@ public class Manager : UndoSource
 
     void Start()
     {
+        for (int i = 0; i<deck.childCount; i++)
+        {
+            Transform next = deck.transform.GetChild(i);
+            next.localPosition = new(250 * i, 0);
+            next.gameObject.AddComponent(Type.GetType(next.name));
+            Card card = next.GetComponent<Card>();
+            card.GetCardID(i);
+            listOfCards.Add(card);
+        }
+
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.Instantiate(CarryVariables.instance.playerPrefab.name, new Vector3(-10000, -10000, 0), new Quaternion());
-            StartCoroutine(Setup());
-        }
-        else
-        {
-            Player solitairePlayer = Instantiate(CarryVariables.instance.playerPrefab, new Vector3(-10000, -10000, 0), new Quaternion());
-            solitairePlayer.name = "Solitaire";
             StartCoroutine(Setup());
         }
     }
@@ -118,9 +126,6 @@ public class Manager : UndoSource
 
     void GetPlayers()
     {
-        if (CarryVariables.instance.debug)
-            Log.instance.AddText("Debug mode.");
-
         for (int i = 0; i<storePlayers.childCount; i++)
         {
             Player player = storePlayers.transform.GetChild(i).GetComponent<Player>();

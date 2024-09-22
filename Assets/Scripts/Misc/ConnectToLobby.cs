@@ -22,7 +22,6 @@ public class ConnectToLobby : MonoBehaviourPunCallbacks
 
     void LocalPlay(bool debug)
     {
-        CarryVariables.instance.DebugMode(debug);
         SceneManager.LoadScene("2. Game");
     }
 
@@ -32,7 +31,6 @@ public class ConnectToLobby : MonoBehaviourPunCallbacks
 
     public void Join(string region)
     {
-        CarryVariables.instance.DebugMode(false);
         PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = region;
         PhotonNetwork.ConnectUsingSettings();
         PlayerPrefs.SetString("Online Username", "");
