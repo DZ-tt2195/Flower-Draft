@@ -1,6 +1,16 @@
 {
   [
-    "Demo",
-    "Rose"
+    "AdjacentsConcealed",
+    "AdjacentsDifferent",
+    "AdjacentsRevealed",
+    "AllConcealed",
+    "AllRevealed",
+    "AscendingValue",
+    "Conceal",
+    "DescendingValue",
+    "Reveal",
+    "Rose",
+    "ThisConcealed",
+    "ThisRevealed"
   ]
 }

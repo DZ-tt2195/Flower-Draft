@@ -125,6 +125,7 @@ public class CarryVariables : MonoBehaviour
     public void RightClickDisplay(Card card, float alpha)
     {
         rightClickBackground.gameObject.SetActive(true);
-        rightClickCard.FillInCards(card, alpha);
+        rightClickCard.FillInCards(card);
+        rightClickCard.cg.alpha = alpha;
     }
 }

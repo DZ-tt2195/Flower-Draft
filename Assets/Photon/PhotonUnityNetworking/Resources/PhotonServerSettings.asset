@@ -56,6 +56,12 @@ MonoBehaviour:
   - TakeCard
   - AddCard
   - NextTurn
+  - BeforeScoringDecisions
+  - PlayerDoneDeciding
+  - PlayerDoneSharing
+  - PutCardsInHand
+  - OfferCards
+  - ChangeStatus
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

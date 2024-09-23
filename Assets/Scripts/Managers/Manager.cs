@@ -14,6 +14,7 @@ using System.IO;
 using System.Diagnostics;
 using System;
 
+public enum GamePhase { Waiting, Offering, BeforeScoring, Scoring }
 public class Manager : UndoSource
 {
 
@@ -37,6 +38,10 @@ public class Manager : UndoSource
     [ReadOnly] public List<Player> playersInOrder = new();
     public Transform storePlayers { get; private set; }
     Player currentPlayer;
+
+    [Foldout("Scoring", true)]
+    int waitingOnPlayers;
+    bool waitingOnShare;
 
     [Foldout("Ending", true)]
     [SerializeField] Transform endScreen;
@@ -140,6 +145,7 @@ public class Manager : UndoSource
             Player player = storePlayers.transform.GetChild(i).GetComponent<Player>();
             currentPlayer = player;
             MultiFunction(nameof(AddPlayer), RpcTarget.All, new object[2] { player.name, i });
+            player.MultiFunction(nameof(Player.RequestDraw), RpcTarget.MasterClient, new object[1] { 6 });
         }
         MultiFunction(nameof(NextTurn), RpcTarget.MasterClient);
     }
@@ -175,11 +181,75 @@ public class Manager : UndoSource
         instructions.text = (text);
     }
 
+    public Player NextPlayer(Player thisPlayer)
+    {
+        return playersInOrder[(thisPlayer.playerPosition + 1) % playersInOrder.Count];
+    }
+
+    public Player PrevPlayer(Player thisPlayer)
+    {
+        return playersInOrder[(thisPlayer.playerPosition - 1 + playersInOrder.Count) % playersInOrder.Count];
+    }
+
     [PunRPC]
     public void NextTurn()
     {
-        currentPlayer = playersInOrder[(currentPlayer.playerPosition + 1) % playersInOrder.Count];
-        currentPlayer.MultiFunction(nameof(Player.RequestDraw), RpcTarget.MasterClient, new object[1] {2});
+        bool keepPlaying = false;
+        foreach (Player player in playersInOrder)
+        {
+            if (player.cardsPlayed.Count < 6)
+            {
+                keepPlaying = true;
+                break;
+            }
+        }
+
+        if (keepPlaying)
+        {
+            currentPlayer = playersInOrder[(currentPlayer.playerPosition + 1) % playersInOrder.Count];
+            currentPlayer.MultiFunction(nameof(Player.OfferCards), currentPlayer.realTimePlayer);
+        }
+        else
+        {
+            StartCoroutine(PlayerScoringDecisions());
+        }
+    }
+
+    #endregion
+
+#region Scoring
+
+    IEnumerator PlayerScoringDecisions()
+    {
+        foreach (Player player in playersInOrder)
+        {
+            player.MultiFunction(nameof(Player.BeforeScoringDecisions), player.realTimePlayer);
+            waitingOnPlayers++;
+        }
+        while (waitingOnPlayers > 0)
+            yield return null;
+
+        foreach (Player player in playersInOrder)
+        {
+            waitingOnShare = true;
+            player.pv.RPC(nameof(Player.ShareSteps), player.realTimePlayer);
+
+            while (waitingOnShare)
+                yield return null;
+        }
+        MultiFunction(nameof(DisplayEnding), RpcTarget.All, new object[1] {-1});
+    }
+
+    [PunRPC]
+    public void PlayerDoneDeciding()
+    {
+        waitingOnPlayers--;
+    }
+
+    [PunRPC]
+    public void PlayerDoneSharing()
+    {
+        waitingOnShare = false;
     }
 
     #endregion

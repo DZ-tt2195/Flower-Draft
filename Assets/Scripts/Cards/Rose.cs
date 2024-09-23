@@ -7,5 +7,6 @@ public class Rose : Card
         textBox = "";
         value = 4;
         myColor = Color.red;
+        myType = CardType.OnlyScoring;
     }
 }

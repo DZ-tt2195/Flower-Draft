@@ -8,7 +8,7 @@ using TMPro;
 
 public class CardLayout : MonoBehaviour, IPointerClickHandler
 {
-    CanvasGroup cg;
+    public CanvasGroup cg { get; private set; }
     public Image background { get; private set; }
     TMP_Text titleText;
     TMP_Text valueText;
@@ -32,18 +32,12 @@ public class CardLayout : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public void FillInCards(Card card, float alpha)
+    public void FillInCards(Card card)
     {
         myCard = card;
         background.color = card.myColor;
         titleText.text = card.name;
         valueText.text = $"{card.value} VP";
         description.text = card.textBox;
-        ChangeAlpha(alpha);
-    }
-
-    public void ChangeAlpha(float alpha)
-    {
-        cg.alpha = alpha;
     }
 }
