@@ -6,7 +6,7 @@ public class ThisRevealed : Card
     protected override void SpecificSetup()
     {
         textBox = "If this is Revealed, +2 VP.";
-        value = 3;
+        value = 4;
         myColor = Color.red;
         myType = CardType.OnlyScoring;
     }

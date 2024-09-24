@@ -7,7 +7,7 @@ public class AdjacentsConcealed : Card
     protected override void SpecificSetup()
     {
         textBox = "+1 VP per adjacent card that's Concealed.";
-        value = 3;
+        value = 4;
         myColor = Color.red;
         myType = CardType.OnlyScoring;
     }

@@ -7,7 +7,7 @@ public class AdjacentsDifferent : Card
     protected override void SpecificSetup()
     {
         textBox = "If one adjacent card is Revealed and the other is Concealed, +3 VP.";
-        value = 2;
+        value = 3;
         myColor = Color.red;
         myType = CardType.OnlyScoring;
     }

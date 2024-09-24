@@ -8,6 +8,7 @@
     "AscendingValue",
     "Conceal",
     "DescendingValue",
+    "MoveMe",
     "Reveal",
     "Rose",
     "ThisConcealed",

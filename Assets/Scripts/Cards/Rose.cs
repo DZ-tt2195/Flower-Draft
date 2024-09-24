@@ -5,7 +5,7 @@ public class Rose : Card
     protected override void SpecificSetup()
     {
         textBox = "";
-        value = 4;
+        value = 5;
         myColor = Color.red;
         myType = CardType.OnlyScoring;
     }

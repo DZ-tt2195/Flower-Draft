@@ -187,26 +187,42 @@ public class Player : UndoSource
         {
             int storeChoice = this.choice;
             int otherChoice = (storeChoice + 1) % 2;
-            this.MultiFunction(nameof(PlayCard), RpcTarget.All, new object[2] { listOfCardIDs[storeChoice], alphas[storeChoice] });
-            previousPlayer.MultiFunction(nameof(PlayCard), RpcTarget.All, new object[2] { listOfCardIDs[otherChoice], alphas[otherChoice] });
+
+            this.MultiFunction(nameof(MoveCard), RpcTarget.All, new object[3] { listOfCardIDs[storeChoice], -1, alphas[storeChoice] }) ;
+            previousPlayer.MultiFunction(nameof(MoveCard), RpcTarget.All, new object[3] { listOfCardIDs[otherChoice], -1, alphas[otherChoice] });
         }
     }
 
     [PunRPC]
-    void PlayCard(int cardID, int alpha)
+    public void MoveCard(int cardID, int position, int alpha)
     {
         Card card = Manager.instance.listOfCards[cardID];
-        cardsPlayed.Add(card);
-        card.transform.SetParent(playArea);
-        StartCoroutine(card.MoveCard(new(-800 + 225 * cardsPlayed.Count, 0), 0.25f));
-        card.ChangeStatus(this.playerPosition, alpha == 0 ? (int)Status.Concealed : (int)Status.Revealed);
-
-        if (alpha == 1)
-            Log.instance.MultiFunction(nameof(Log.AddText), RpcTarget.All, new object[2] { $"{this.name} takes {card.name}, revealed.", 0 });
-        else if (InControl())
-            Log.instance.MultiFunction(nameof(Log.AddText), RpcTarget.All, new object[2] { $"{this.name} takes {card.name}, concealed.", 0 });
+        if (position == -1)
+        {
+            cardsPlayed.Add(card);
+            if (alpha == 1)
+                Log.instance.AddText($"{this.name} takes {card.name}, revealed.");
+            else if (InControl())
+                Log.instance.AddText($"{this.name} takes {card.name}, concealed.");
+            else
+                Log.instance.AddText($"{this.name} takes a card, concealed.");
+        }
         else
-            Log.instance.MultiFunction(nameof(Log.AddText), RpcTarget.All, new object[2] { $"{this.name} takes a card, concealed.", 0 });
+        {
+            cardsPlayed.Remove(card);
+            cardsPlayed.Insert(position, card);
+        }
+        card.transform.SetParent(playArea);
+        card.ChangeStatus(this.playerPosition, alpha);
+    }
+
+    public void SortPlayArea()
+    {
+        for (int i = 0; i<cardsPlayed.Count; i++)
+        {
+            Card card = cardsPlayed[i];
+            StartCoroutine(card.MoveCard(new(-800 + 225 * i, card.status == Status.Revealed ? 250 : -100), 0.25f));
+        }
     }
 
     #endregion

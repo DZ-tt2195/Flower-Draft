@@ -6,7 +6,7 @@ public class DescendingValue : Card
     protected override void SpecificSetup()
     {
         textBox = "If the previous card has a higher value than this, and the next card has a lower value than this, +3 VP.";
-        value = 2;
+        value = 3;
         myColor = Color.red;
         myType = CardType.OnlyScoring;
     }

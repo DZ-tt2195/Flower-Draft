@@ -145,7 +145,7 @@ public class Manager : UndoSource
             Player player = storePlayers.transform.GetChild(i).GetComponent<Player>();
             currentPlayer = player;
             MultiFunction(nameof(AddPlayer), RpcTarget.All, new object[2] { player.name, i });
-            player.MultiFunction(nameof(Player.RequestDraw), RpcTarget.MasterClient, new object[1] { 6 });
+            player.MultiFunction(nameof(Player.RequestDraw), RpcTarget.MasterClient, new object[1] { 8 });
         }
         MultiFunction(nameof(NextTurn), RpcTarget.MasterClient);
     }

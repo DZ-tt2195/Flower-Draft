@@ -9,7 +9,7 @@ public class Reveal : Card
     protected override void SpecificSetup()
     {
         textBox = "Before scoring: You may Reveal a Concealed card.";
-        value = 3;
+        value = 4;
         myColor = Color.red;
         myType = CardType.BeforeScoring;
     }

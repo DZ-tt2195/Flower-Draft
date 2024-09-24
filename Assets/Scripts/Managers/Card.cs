@@ -6,7 +6,7 @@ using TMPro;
 using System.Collections;
 
 public enum CardType { OnlyScoring, BeforeScoring }
-public enum Status { Revealed, Concealed };
+public enum Status { Concealed, Revealed };
 public class Card : UndoSource
 {
 
@@ -61,19 +61,13 @@ public class Card : UndoSource
     {
         Player player = Manager.instance.playersInOrder[playerID];
         this.status = (Status)newStatus;
+        this.layout.FillInCards(this);
+        player.SortPlayArea();
 
         if (this.status == Status.Revealed)
-        {
-            this.transform.localPosition = new(this.transform.localPosition.x, 250);
-            this.layout.FillInCards(this);
             this.layout.cg.alpha = 1;
-        }
         else
-        {
-            this.transform.localPosition = new(this.transform.localPosition.x, -100);
-            this.layout.FillInCards(this);
             this.layout.cg.alpha = player.InControl() ? 1 : 0;
-        }
     }
 
     public virtual int Scoring(Player player)

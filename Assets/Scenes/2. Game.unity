@@ -1879,6 +1879,8 @@ MonoBehaviour:
     Care about other
     players
 
+    Cares about values
+
     Do stuff before scoring'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
@@ -2605,9 +2607,6 @@ MonoBehaviour:
 
     +VP per card that''s less than X value
 
-    You
-    can shift this card left or right (keeping it public / revealed)
-
     Discard
     the previous card'
   m_isRightToLeft: 0
@@ -2636,7 +2635,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 51.5
+  m_fontSize: 60
   m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 1
