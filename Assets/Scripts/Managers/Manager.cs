@@ -47,9 +47,6 @@ public class Manager : UndoSource
     [SerializeField] Transform endScreen;
     [SerializeField] TMP_Text scoreText;
     [SerializeField] Button quitGame;
-    [SerializeField] Button copyGame;
-    Stopwatch stopwatch;
-    string endText;
 
     #endregion
 
@@ -84,9 +81,12 @@ public class Manager : UndoSource
             {
                 for (int i = 0; i < CarryVariables.instance.cardNames.Count; i++)
                 {
-                    GameObject next = PhotonNetwork.Instantiate(CarryVariables.instance.cardPrefab.name, new(-10000, -10000, 0), new());
-                    next.transform.SetParent(deck);
-                    next.name = CarryVariables.instance.cardNames[i];
+                    for (int k = 0; k < 2; k++)
+                    {
+                        GameObject next = PhotonNetwork.Instantiate(CarryVariables.instance.cardPrefab.name, new(-10000, -10000, 0), new());
+                        next.transform.SetParent(deck);
+                        next.name = CarryVariables.instance.cardNames[i];
+                    }
                 }
             }
         }
@@ -105,8 +105,6 @@ public class Manager : UndoSource
         while (group.AnyProcessing)
             yield return null;
 
-        stopwatch = new Stopwatch();
-        stopwatch.Start();
         if (!PhotonNetwork.IsConnected || PhotonNetwork.IsMasterClient)
         {
             Invoke(nameof(GetPlayers), 0.5f);
@@ -176,6 +174,12 @@ public class Manager : UndoSource
 
 #region Gameplay
 
+    public void WaitOnOthers()
+    {
+        MultiFunction(nameof(Instructions), RpcTarget.Others, new object[1] { "Waiting on other players..." });
+    }
+
+    [PunRPC]
     public void Instructions(string text)
     {
         instructions.text = (text);
@@ -221,6 +225,8 @@ public class Manager : UndoSource
 
     IEnumerator PlayerScoringDecisions()
     {
+        Log.instance.MultiFunction(nameof(Log.AddText), RpcTarget.All, new object[2] { "", 0 });
+        Log.instance.MultiFunction(nameof(Log.AddText), RpcTarget.All, new object[2] { "Begin Scoring", 0 });
         foreach (Player player in playersInOrder)
         {
             player.MultiFunction(nameof(Player.BeforeScoringDecisions), player.realTimePlayer);
@@ -262,13 +268,14 @@ public class Manager : UndoSource
         Popup[] allPopups = FindObjectsByType<Popup>(FindObjectsSortMode.None);
         foreach (Popup popup in allPopups)
             Destroy(popup.gameObject);
-        /*
+
         List<Player> playerScoresInOrder = playersInOrder.OrderByDescending(player => player.CalculateScore()).ToList();
         int nextPlacement = 1;
         scoreText.text = "";
 
         Log.instance.AddText("");
         Log.instance.AddText("The game has ended.");
+
         Player resignPlayer = null;
         if (resignPosition >= 0)
         {
@@ -276,37 +283,11 @@ public class Manager : UndoSource
             Log.instance.AddText($"{resignPlayer.name} has resigned.");
         }
 
-        stopwatch.Stop();
-        endText = (CarryVariables.instance.debug) ? "Debug Game\n" : "";
-        endText += $"Game length: {CalculateTime()}\n";
-
-        string CalculateTime()
-        {
-            TimeSpan time = stopwatch.Elapsed;
-            string part = time.Seconds < 10 ? $"0{time.Seconds}" : $"{time.Seconds}";
-            return $"{time.Minutes}:{part}";
-        }
-
-        for (int i = 0; i<buyablesInOrder.Count; i++)
-        {
-            endText += buyablesInOrder[i].name;
-            if (i < buyablesInOrder.Count - 1)
-                endText += ", ";
-        }
-        endText += "\n";
-        for (int i = 0; i < twistsInOrder.Count; i++)
-        {
-            endText += twistsInOrder[i].name;
-            if (i < twistsInOrder.Count - 1)
-                endText += ", ";
-        }
-
         for (int i = 0; i < playerScoresInOrder.Count; i++)
         {
             Player player = playerScoresInOrder[i];
             if (player != resignPlayer)
             {
-                EndstatePlayer(player, false);
                 scoreText.text += $"{nextPlacement}: {player.name}: {player.CalculateScore()} VP\n";
                 if (i == 0 || playerScoresInOrder[i - 1].CalculateScore() != player.CalculateScore())
                     nextPlacement++;
@@ -315,26 +296,11 @@ public class Manager : UndoSource
 
         if (resignPlayer != null)
         {
-            EndstatePlayer(resignPlayer, true);
             scoreText.text += $"\nResigned: {resignPlayer.name}: {resignPlayer.CalculateScore()} VP";
         }
-        scoreText.text = KeywordTooltip.instance.EditText(scoreText.text);
 
         endScreen.gameObject.SetActive(true);
         quitGame.onClick.AddListener(Leave);
-        copyGame.onClick.AddListener(() => GUIUtility.systemCopyBuffer = endText);
-        */
-    }
-
-    void EndstatePlayer(Player player, bool resigned)
-    {
-        /*
-        endText += $"\n\n{player.name} - {player.CalculateScore()} VP {(resigned ? $"[Resigned on turn {turnNumber}]" : "")}\n";
-        Dictionary<Area, int> dictionary = player.BuildingCount(player.listOfDiceStorages);
-        foreach (KeyValuePair<Area, int> pair in dictionary)
-            endText += $"{pair.Value} {pair.Key}, ";
-        endText += $"{player.peasantsAround.Count} Peasant, {player.resourceDictionary[Resource.Dice]} Dice";
-        */
     }
 
     void Leave()

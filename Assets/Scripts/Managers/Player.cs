@@ -146,6 +146,7 @@ public class Player : UndoSource
     [PunRPC]
     public void OfferCards()
     {
+        Manager.instance.WaitOnOthers();
         Player nextPlayer = Manager.instance.NextPlayer(this);
         List<int> cardList = new();
         Loop();
@@ -174,6 +175,7 @@ public class Player : UndoSource
     [PunRPC]
     void TakeCard(int[] listOfCardIDs)
     {
+        Manager.instance.WaitOnOthers();
         Player previousPlayer = Manager.instance.PrevPlayer(this);
         List<Card> cardList = new();
         List<int> alphas = new() { 1, 0 };
@@ -181,6 +183,7 @@ public class Player : UndoSource
         for (int i = 0; i < listOfCardIDs.Length; i++)
             cardList.Add(Manager.instance.listOfCards[listOfCardIDs[i]]);
 
+        Log.instance.MultiFunction(nameof(Log.AddText), RpcTarget.All, new object[2] { $"{this.name} looks at {cardList[0].name} & {cardList[1].name}", 0 });
         ChooseCardFromPopup(cardList, alphas, $"Which card to play?", Next);
 
         void Next()
@@ -254,7 +257,7 @@ public class Player : UndoSource
             }
             else
             {
-                Manager.instance.Instructions($"Wait for others to finish...");
+                Manager.instance.Instructions($"Wait on other players...");
                 this.listOfSteps = Log.instance.RememberSteps();
                 Manager.instance.MultiFunction(nameof(Manager.PlayerDoneDeciding), RpcTarget.MasterClient);
             }
@@ -322,7 +325,7 @@ public class Player : UndoSource
         AddDecisionReact(Disable);
         AddDecisionReact(action);
 
-        for (int i = 1; i < listOfCards.Count; i++)
+        for (int i = 0; i < listOfCards.Count; i++)
             popup.AddCardButton(listOfCards[i], listOfAlphas[i]);
 
         void Disable()

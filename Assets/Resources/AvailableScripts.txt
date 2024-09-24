@@ -3,15 +3,21 @@
     "AdjacentsConcealed",
     "AdjacentsDifferent",
     "AdjacentsRevealed",
+    "AdjacentsSmallValue",
     "AllConcealed",
     "AllRevealed",
     "AscendingValue",
     "Conceal",
     "DescendingValue",
+    "ManyColors",
+    "MostFrequentColor",
     "MoveMe",
+    "OthersConcealed",
+    "OthersRevealed",
     "Reveal",
     "Rose",
     "ThisConcealed",
-    "ThisRevealed"
+    "ThisRevealed",
+    "ThreeDifferentColors"
   ]
 }
