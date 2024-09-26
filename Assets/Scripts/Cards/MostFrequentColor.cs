@@ -7,7 +7,7 @@ public class MostFrequentColor : Card
     {
         textBox = "+1 VP per card you have with your most frequent color.";
         value = 2;
-        myColor = Color.red;
+        myColor = Color.yellow;
         myType = CardType.OnlyScoring;
     }
 

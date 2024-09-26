@@ -7,7 +7,7 @@ public class ThreeDifferentColors : Card
     {
         textBox = "If there are 3 different colors among this and adjacent cards, +3 VP.";
         value = 3;
-        myColor = Color.red;
+        myColor = Color.yellow;
         myType = CardType.OnlyScoring;
     }
 

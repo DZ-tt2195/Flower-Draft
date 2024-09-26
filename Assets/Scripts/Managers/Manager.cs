@@ -225,8 +225,6 @@ public class Manager : UndoSource
 
     IEnumerator PlayerScoringDecisions()
     {
-        Log.instance.MultiFunction(nameof(Log.AddText), RpcTarget.All, new object[2] { "", 0 });
-        Log.instance.MultiFunction(nameof(Log.AddText), RpcTarget.All, new object[2] { "Begin Scoring", 0 });
         foreach (Player player in playersInOrder)
         {
             player.MultiFunction(nameof(Player.BeforeScoringDecisions), player.realTimePlayer);
@@ -273,14 +271,10 @@ public class Manager : UndoSource
         int nextPlacement = 1;
         scoreText.text = "";
 
-        Log.instance.AddText("");
-        Log.instance.AddText("The game has ended.");
-
         Player resignPlayer = null;
         if (resignPosition >= 0)
         {
             resignPlayer = playersInOrder[resignPosition];
-            Log.instance.AddText($"{resignPlayer.name} has resigned.");
         }
 
         for (int i = 0; i < playerScoresInOrder.Count; i++)

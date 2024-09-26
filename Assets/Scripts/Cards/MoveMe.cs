@@ -8,7 +8,7 @@ public class MoveMe : Card
     {
         textBox = "Before scoring: You may move this one spot to the left or right.";
         value = 4;
-        myColor = Color.red;
+        myColor = Color.white;
         myType = CardType.BeforeScoring;
     }
 
@@ -22,7 +22,7 @@ public class MoveMe : Card
             options.Add("Right");
         options.Add("Don't Move");
 
-        player.ChooseButton(options.ToArray(), $"Move {this.name} left or right?", Resolution);
+        player.ChooseButton(options, $"Move this card left or right?", Resolution);
 
         void Resolution()
         {
@@ -30,15 +30,13 @@ public class MoveMe : Card
             {
                 case "Left":
                     Log.instance.AddStep(1, player, player, nameof(Player.MoveCard),
-                        new object[3] { this.cardID, position - 1, (int)this.status }, logged);
+                        new object[3] { this.cardID, position - 1, (int)this.status });
                     Log.instance.Continue();
-                    player.PreserveLogTextRPC($"{player.name} moves {this.name} to the left.", logged);
                     break;
                 case "Right":
                     Log.instance.AddStep(1, player, player, nameof(Player.MoveCard),
-                        new object[3] { this.cardID, position + 1, (int)this.status }, logged);
+                        new object[3] { this.cardID, position + 1, (int)this.status });
                     Log.instance.Continue();
-                    player.PreserveLogTextRPC($"{player.name} moves {this.name} to the right.", logged);
                     break;
                 case "Don't Move":
                     break;

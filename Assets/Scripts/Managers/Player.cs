@@ -183,7 +183,6 @@ public class Player : UndoSource
         for (int i = 0; i < listOfCardIDs.Length; i++)
             cardList.Add(Manager.instance.listOfCards[listOfCardIDs[i]]);
 
-        Log.instance.MultiFunction(nameof(Log.AddText), RpcTarget.All, new object[2] { $"{this.name} looks at {cardList[0].name} & {cardList[1].name}", 0 });
         ChooseCardFromPopup(cardList, alphas, $"Which card to play?", Next);
 
         void Next()
@@ -203,12 +202,6 @@ public class Player : UndoSource
         if (position == -1)
         {
             cardsPlayed.Add(card);
-            if (alpha == 1)
-                Log.instance.AddText($"{this.name} takes {card.name}, revealed.");
-            else if (InControl())
-                Log.instance.AddText($"{this.name} takes {card.name}, concealed.");
-            else
-                Log.instance.AddText($"{this.name} takes a card, concealed.");
         }
         else
         {
@@ -250,8 +243,6 @@ public class Player : UndoSource
                     needDecisions.Remove(next);
                     DecisionMade(CarryVariables.instance.undecided);
                     AddDecisionReact(Loop);
-
-                    PreserveLogTextRPC($"{this.name} resolves {next.name}.", 0);
                     next.BeforeScoring(this, 1);
                 }
             }
@@ -288,7 +279,7 @@ public class Player : UndoSource
         {
             Log.instance.pv.RPC(nameof(Log.instance.DeleteHistory), RpcTarget.All);
             foreach (NextStep step in listOfSteps)
-                Log.instance.AddStepForOthers(1, this, step.source, step.instruction, step.infoToRemember, step.logged);
+                Log.instance.AddStepForOthers(1, this, step.source, step.instruction, step.infoToRemember);
             listOfSteps.Clear();
         }
         Manager.instance.MultiFunction(nameof(Manager.PlayerDoneSharing), RpcTarget.MasterClient);
@@ -298,12 +289,12 @@ public class Player : UndoSource
 
 #region Decisions
 
-    public void ChooseButton(string[] possibleChoices, string changeInstructions, Action action)
+    public void ChooseButton(List<string> possibleChoices, string changeInstructions, Action action)
     {
         Popup popup = Instantiate(CarryVariables.instance.textPopup);
         popup.StatsSetup(this, "Choices", new(0, -500));
 
-        for (int i = 0; i < possibleChoices.Length; i++)
+        for (int i = 0; i < possibleChoices.Count; i++)
             popup.AddTextButton(possibleChoices[i]);
 
         DecisionMade(CarryVariables.instance.undecided);
@@ -443,20 +434,6 @@ public class Player : UndoSource
     void MoveScreen()
     {
         Manager.instance.storePlayers.localPosition = new Vector3(-2500 * this.playerPosition, 0, 0);
-    }
-
-    public void PreserveLogTextRPC(string text, int logged = 0)
-    {
-        Log.instance.AddStep(1, this, this, nameof(PreserveText), new object[1] { text }, logged);
-        Log.instance.Continue();
-    }
-
-    [PunRPC]
-    void PreserveText(int logged)
-    {
-        NextStep step = Log.instance.GetCurrentStep();
-        string text = (string)step.infoToRemember[0];
-        Log.instance.AddText(text, logged);
     }
 
     #endregion

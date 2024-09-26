@@ -8,7 +8,7 @@ public class AllConcealed : Card
     {
         textBox = "+2 VP per card you have that's Concealed.";
         value = 0;
-        myColor = Color.red;
+        myColor = Color.gray;
         myType = CardType.OnlyScoring;
     }
 

@@ -10,7 +10,7 @@ public class Reveal : Card
     {
         textBox = "Before scoring: You may Reveal a Concealed card.";
         value = 4;
-        myColor = Color.red;
+        myColor = Color.white;
         myType = CardType.BeforeScoring;
     }
 
@@ -25,7 +25,7 @@ public class Reveal : Card
             {
                 Card toConceal = player.chosenCard;
                 Log.instance.AddStep(1, player, toConceal, nameof(ChangeStatus),
-                    new object[2] { player.playerPosition, (int)Status.Revealed }, logged);
+                    new object[2] { player.playerPosition, (int)Status.Revealed });
                 Log.instance.Continue();
             }
             player.DecisionMade(-1);

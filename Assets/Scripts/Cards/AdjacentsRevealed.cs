@@ -9,7 +9,7 @@ public class AdjacentsRevealed : Card
     {
         textBox = "+1 VP per adjacent card that's Revealed.";
         value = 4;
-        myColor = Color.red;
+        myColor = Color.gray;
         myType = CardType.OnlyScoring;
     }
 

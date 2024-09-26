@@ -9,7 +9,7 @@ public class OthersConcealed : Card
     {
         textBox = "+2 VP per card the next player has that's Concealed.";
         value = 0;
-        myColor = Color.red;
+        myColor = Color.blue;
         myType = CardType.OnlyScoring;
     }
 

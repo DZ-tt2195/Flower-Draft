@@ -8,7 +8,7 @@ public class OthersRevealed : Card
     {
         textBox = "+2 VP per card the next player has that's Revealed.";
         value = 0;
-        myColor = Color.red;
+        myColor = Color.blue;
         myType = CardType.OnlyScoring;
     }
 

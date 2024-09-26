@@ -7,7 +7,7 @@ public class ManyColors : Card
     {
         textBox = "+1 VP per different color among all your cards.";
         value = 2;
-        myColor = Color.red;
+        myColor = Color.yellow;
         myType = CardType.OnlyScoring;
     }
 
