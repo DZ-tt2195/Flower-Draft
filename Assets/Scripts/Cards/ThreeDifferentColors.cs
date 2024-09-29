@@ -11,7 +11,7 @@ public class ThreeDifferentColors : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         List<Color> allColors = new() { this.myColor };
         List<Card> adjacents = player.AdjacentCards(this);
@@ -23,6 +23,6 @@ public class ThreeDifferentColors : Card
                 allColors.Add(card.myColor);
         }
 
-        return base.Scoring(player) + allColors.Count == 3 ? 3 : 0;
+        return allColors.Count == 3 ? 3 : 0;
     }
 }

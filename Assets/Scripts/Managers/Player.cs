@@ -25,8 +25,8 @@ public class Player : UndoSource
         Transform playArea;
 
     [Foldout("Cards", true)]
-    public List<Card> cardsPlayed = new();
-    List<Card> cardsInHand = new();
+        public List<Card> cardsPlayed = new();
+        public List<Card> cardsInHand = new();
 
     [Foldout("Choices", true)]
         public int choice { get; private set; }
@@ -199,6 +199,7 @@ public class Player : UndoSource
     public void MoveCard(int cardID, int position, int alpha)
     {
         Card card = Manager.instance.listOfCards[cardID];
+        cardsInHand.Remove(card);
         try
         {
             cardsPlayed.Remove(card);

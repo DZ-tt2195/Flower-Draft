@@ -10,7 +10,7 @@ public class ColorAfterThis : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         int thisPosition = player.cardsPlayed.IndexOf(this);
         int counter = 0;
@@ -20,6 +20,6 @@ public class ColorAfterThis : Card
                 counter++;
         }
 
-        return base.Scoring(player) + (counter >= 2 ? 4 : 0);
+        return counter >= 2 ? 4 : 0;
     }
 }

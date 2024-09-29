@@ -12,9 +12,9 @@ public class OthersRevealed : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         List<Card> revealed = Manager.instance.NextPlayer(player).cardsPlayed.Where(card => card.status == Status.Revealed).ToList();
-        return base.Scoring(player) + revealed.Count * 2;
+        return revealed.Count * 2;
     }
 }

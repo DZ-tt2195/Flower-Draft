@@ -11,7 +11,7 @@ public class MostFrequentColor : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         Dictionary<Color, int> colorDictionary = new();
         int highestColor = 0;
@@ -21,6 +21,6 @@ public class MostFrequentColor : Card
             if (colorDictionary[card.myColor] > highestColor)
                 highestColor = colorDictionary[card.myColor];
         }
-        return base.Scoring(player) + highestColor;
+        return highestColor;
     }
 }

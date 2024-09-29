@@ -12,9 +12,9 @@ public class AdjacentsConcealed : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         List<Card> concealedAdjacents = player.AdjacentCards(this).Where(card => card.status == Status.Concealed).ToList();
-        return base.Scoring(player) + (concealedAdjacents.Count);
+        return concealedAdjacents.Count;
     }
 }

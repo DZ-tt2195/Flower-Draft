@@ -12,9 +12,9 @@ public class TheirWhite : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         List<Card> whiteCards = Manager.instance.NextPlayer(player).cardsPlayed.Where(card => card.myColor == Color.white).ToList();
-        return base.Scoring(player) + whiteCards.Count;
+        return whiteCards.Count;
     }
 }

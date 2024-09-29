@@ -70,13 +70,18 @@ public class Card : UndoSource
             this.layout.cg.alpha = player.InControl() ? 1 : 0;
     }
 
-    public virtual int Scoring(Player player)
-    {
-        return value;
-    }
-
     public virtual void BeforeScoring(Player player, int logged)
     {
+    }
+
+    public int Scoring(Player player)
+    {
+        return value + Ability(player);
+    }
+
+    protected virtual int Ability(Player player)
+    {
+        return 0;
     }
 
     #endregion

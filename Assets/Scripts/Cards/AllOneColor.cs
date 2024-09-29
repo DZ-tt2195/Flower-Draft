@@ -11,7 +11,7 @@ public class AllOneColor : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         Dictionary<Color, int> colorCount = new()
         {
@@ -30,6 +30,6 @@ public class AllOneColor : Card
                 highest = colorCount[card.myColor];
         }
 
-        return base.Scoring(player) + highest;
+        return highest;
     }
 }

@@ -12,9 +12,9 @@ public class AdjacentsSmallValue : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         List<Card> adjacentsTwoLess = player.AdjacentCards(this).Where(card => card.value <= 2).ToList();
-        return base.Scoring(player) + (adjacentsTwoLess.Count * 2);
+        return (adjacentsTwoLess.Count * 2);
     }
 }

@@ -13,9 +13,9 @@ public class OthersConcealed : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         List<Card> concealed = Manager.instance.NextPlayer(player).cardsPlayed.Where(card => card.status == Status.Concealed).ToList();
-        return base.Scoring(player) + concealed.Count * 2;
+        return concealed.Count * 2;
     }
 }

@@ -10,8 +10,8 @@ public class ThisConcealed : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
-        return base.Scoring(player) + (this.status == Status.Concealed ? -2 : 0);
+        return this.status == Status.Concealed ? -2 : 0;
     }
 }

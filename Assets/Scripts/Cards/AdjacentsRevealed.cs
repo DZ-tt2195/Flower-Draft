@@ -13,9 +13,9 @@ public class AdjacentsRevealed : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         List<Card> revealedAdjacents = player.AdjacentCards(this).Where(card => card.status == Status.Revealed).ToList();
-        return base.Scoring(player) + (revealedAdjacents.Count);
+        return (revealedAdjacents.Count);
     }
 }

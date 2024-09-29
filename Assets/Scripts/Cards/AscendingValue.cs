@@ -12,12 +12,12 @@ public class AscendingValue : Card
         myType = CardType.OnlyScoring;
     }
 
-    public override int Scoring(Player player)
+    protected override int Ability(Player player)
     {
         List<Card> adjacents = player.AdjacentCards(this);
         if (adjacents.Count == 2 && adjacents[0].value < this.value && adjacents[1].value > this.value)
-            return base.Scoring(player) + 3;
+            return 3;
         else
-            return base.Scoring(player);
+            return 0;
     }
 }
