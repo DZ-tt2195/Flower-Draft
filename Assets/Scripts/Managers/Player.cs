@@ -199,17 +199,19 @@ public class Player : UndoSource
     public void MoveCard(int cardID, int position, int alpha)
     {
         Card card = Manager.instance.listOfCards[cardID];
-        if (position == -1)
-        {
-            cardsPlayed.Add(card);
-        }
-        else
+        try
         {
             cardsPlayed.Remove(card);
             cardsPlayed.Insert(position, card);
         }
+        catch
+        {
+            cardsPlayed.Add(card);
+        }
+
         card.transform.SetParent(playArea);
         card.ChangeStatus(this.playerPosition, alpha);
+        SortPlayArea();
     }
 
     public void SortPlayArea()
