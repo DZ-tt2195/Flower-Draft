@@ -22,6 +22,7 @@ public class Card : UndoSource
     public CardType myType { get; protected set; }
     public int cardID { get; private set; }
     public Status status { get; private set; }
+    public int applyAbility;
 
     #endregion
 
@@ -33,9 +34,11 @@ public class Card : UndoSource
         border = this.transform.Find("Border").GetComponent<Image>();
         button = GetComponent<Button>();
         layout = GetComponent<CardLayout>();
+        this.transform.localScale = Vector3.Lerp(Vector3.one, Manager.instance.canvas.transform.localScale, 0.5f);
+
         SpecificSetup();
         layout.FillInCards(this);
-        this.transform.localScale = Vector3.Lerp(Vector3.one, Manager.instance.canvas.transform.localScale, 0.5f);
+        applyAbility = 1;
     }
 
     protected override void AddToMethodDictionary(string methodName)
@@ -76,7 +79,10 @@ public class Card : UndoSource
 
     public int Scoring(Player player)
     {
-        return value + Ability(player);
+        int addOn = 0;
+        for (int i = 0; i < applyAbility; i++)
+            addOn += Ability(player);
+        return value + addOn;
     }
 
     protected virtual int Ability(Player player)

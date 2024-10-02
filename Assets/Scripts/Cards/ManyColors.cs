@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ManyColors : Card
 {
@@ -15,10 +16,7 @@ public class ManyColors : Card
     {
         List<Color> colorCount = new();
         foreach (Card card in player.cardsPlayed)
-        {
-            if (!colorCount.Contains(card.myColor))
-                colorCount.Add(card.myColor);
-        }
-        return colorCount.Count;
+            colorCount.Add(card.myColor);
+        return colorCount.Distinct().Count();
     }
 }

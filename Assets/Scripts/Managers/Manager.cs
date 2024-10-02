@@ -6,12 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
-using ExitGames.Client.Photon;
-using Photon.Realtime;
 using System.Linq;
-using System.Reflection;
-using System.IO;
-using System.Diagnostics;
 using System;
 
 public enum GamePhase { Waiting, Offering, BeforeScoring, Scoring }

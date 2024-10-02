@@ -4,8 +4,8 @@ public class ColorAfterThis : Card
 {
     protected override void SpecificSetup()
     {
-        textBox = "If there are 2 or more green cards after this, +4 VP.";
-        value = 2;
+        textBox = "If there are 2 or more green cards after this, +6 VP.";
+        value = 0;
         myColor = Color.yellow;
         myType = CardType.OnlyScoring;
     }
@@ -20,6 +20,6 @@ public class ColorAfterThis : Card
                 counter++;
         }
 
-        return counter >= 2 ? 4 : 0;
+        return counter >= 2 ? 6 : 0;
     }
 }

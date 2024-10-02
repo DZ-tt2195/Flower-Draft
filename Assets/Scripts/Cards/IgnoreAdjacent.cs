@@ -2,12 +2,12 @@ using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayAnother : Card
+public class IgnoreAdjacent : Card
 {
     protected override void SpecificSetup()
     {
-        textBox = "Before scoring: Play a non-white card from your hand; it's Revealed and placed at the front.";
-        value = 0;
+        textBox = "Before scoring: Choose an adjacent card; ignore its abilities when scoring.";
+        value = 6;
         myColor = Color.white;
         myType = CardType.BeforeScoring;
     }
@@ -19,14 +19,14 @@ public class PlayAnother : Card
 
     public override void BeforeScoring(Player player, int logged)
     {
-        player.ChooseCardOnScreen(player.cardsInHand, "", "Play a card from your hand.", Resolution);
+        player.ChooseCardOnScreen(player.AdjacentCards(this), "", "Choose a card to ignore instructions.", Resolution);
 
         void Resolution()
         {
             try
             {
-                Card toPlay = player.chosenCard;
-                Log.instance.AddStep(1, player, this, nameof(CardInFront), new object[1] { toPlay.cardID });
+                Card toIgnore = player.chosenCard;
+                Log.instance.AddStep(1, player, this, nameof(IgnoreThatCard), new object[1] { toIgnore.cardID });
                 Log.instance.Continue();
                 player.DecisionMade(-1);
             }
@@ -38,10 +38,10 @@ public class PlayAnother : Card
     }
 
     [PunRPC]
-    void CardInFront()
+    void IgnoreThatCard()
     {
         NextStep step = Log.instance.GetCurrentStep();
         int cardID = (int)step.infoToRemember[0];
-        step.player.MoveCard(cardID, 0, 1);
+        Manager.instance.listOfCards[cardID].applyAbility = 0;
     }
 }

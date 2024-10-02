@@ -68,7 +68,8 @@ public class Player : UndoSource
     internal void AssignInfo(int position)
     {
         this.playerPosition = position;
-        this.transform.localPosition = new Vector3(2500 * this.playerPosition, 0, 0);
+        Manager.instance.storePlayers.transform.localScale = Manager.instance.canvas.transform.localScale;
+        this.transform.localPosition = Vector3.zero;
 
         if (PhotonNetwork.IsConnected)
         {
@@ -436,7 +437,9 @@ public class Player : UndoSource
 
     void MoveScreen()
     {
-        Manager.instance.storePlayers.localPosition = new Vector3(-2500 * this.playerPosition, 0, 0);
+        foreach (Transform transform in Manager.instance.storePlayers)
+            transform.localPosition = new(0, -10000);
+        this.transform.localPosition = Vector3.zero;
     }
 
     #endregion
