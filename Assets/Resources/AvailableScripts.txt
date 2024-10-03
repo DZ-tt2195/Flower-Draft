@@ -10,6 +10,7 @@
     "ChangeThisColor",
     "ColorAfterThis",
     "ColorBeforeThis",
+    "ColorPair",
     "Conceal",
     "DescendingValue",
     "DifferentValue",
@@ -23,7 +24,9 @@
     "PlayAnother",
     "Reveal",
     "StatusLeast",
-    "TheirWhite",
+    "TheirHand",
+    "TheirHighLow",
+    "TheirMissingColors",
     "ThisConcealed",
     "ThisRevealed",
     "ThreeDifferentColors"

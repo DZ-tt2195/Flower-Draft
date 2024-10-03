@@ -76,6 +76,7 @@ MonoBehaviour:
   pv: {fileID: 4903849987688605473}
   playerPosition: 0
   cardsPlayed: []
+  cardsInHand: []
 --- !u!1 &2683946877446972482
 GameObject:
   m_ObjectHideFlags: 0

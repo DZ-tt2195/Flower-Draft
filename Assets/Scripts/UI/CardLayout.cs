@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using MyBox;
 using TMPro;
 
 public class CardLayout : MonoBehaviour, IPointerClickHandler
@@ -35,6 +32,8 @@ public class CardLayout : MonoBehaviour, IPointerClickHandler
         myCard = card;
         background.color = card.myColor;
         valueText.text = $"{card.value} VP";
+        valueText.color = (card.myColor == Color.yellow || card.myColor == Color.white) ? Color.black : Color.white;
         description.text = card.textBox;
+        description.color = (card.myColor == Color.yellow || card.myColor == Color.white) ? Color.black : Color.white;
     }
 }

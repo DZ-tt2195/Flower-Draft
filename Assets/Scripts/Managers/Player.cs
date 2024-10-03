@@ -27,6 +27,7 @@ public class Player : UndoSource
     [Foldout("Cards", true)]
         public List<Card> cardsPlayed = new();
         public List<Card> cardsInHand = new();
+        int discarded = 0;
 
     [Foldout("Choices", true)]
         public int choice { get; private set; }
@@ -140,6 +141,13 @@ public class Player : UndoSource
         }
     }
 
+    void RemoveFromHand(Card card)
+    {
+        cardsInHand.Remove(card);
+        StartCoroutine(card.MoveCard(new(0, -1000), 0.25f));
+        SortHand();
+    }
+
     #endregion
 
 #region Turn
@@ -149,6 +157,7 @@ public class Player : UndoSource
     {
         Manager.instance.WaitOnOthers();
         Player nextPlayer = Manager.instance.NextPlayer(this);
+        MoveScreen();
         List<int> cardList = new();
         Loop();
 
@@ -165,9 +174,7 @@ public class Player : UndoSource
         void Resolution()
         {
             Card card = chosenCard;
-            cardsInHand.Remove(card);
-            StartCoroutine(card.MoveCard(new(0, -1000), 0.25f));
-            SortHand();
+            RemoveFromHand(card);
             cardList.Add(card.cardID);
             Loop();
         }
@@ -177,6 +184,7 @@ public class Player : UndoSource
     void TakeCard(int[] listOfCardIDs)
     {
         Manager.instance.WaitOnOthers();
+        MoveScreen();
         Player previousPlayer = Manager.instance.PrevPlayer(this);
         List<Card> cardList = new();
         List<int> alphas = new() { 1, 0 };
@@ -184,15 +192,29 @@ public class Player : UndoSource
         for (int i = 0; i < listOfCardIDs.Length; i++)
             cardList.Add(Manager.instance.listOfCards[listOfCardIDs[i]]);
 
-        ChooseCardFromPopup(cardList, alphas, $"Which card to play?", Next);
+        ChooseCardFromPopup(cardList, alphas, $"Take a card to add to your play area.", Next);
+        if (discarded < 2)
+            ChooseCardOnScreen(cardsInHand, "", $"You may discard a card to peek at the face down card.", null);
 
         void Next()
         {
             int storeChoice = this.choice;
             int otherChoice = (storeChoice + 1) % 2;
 
-            this.MultiFunction(nameof(MoveCard), RpcTarget.All, new object[3] { listOfCardIDs[storeChoice], -1, alphas[storeChoice] }) ;
-            previousPlayer.MultiFunction(nameof(MoveCard), RpcTarget.All, new object[3] { listOfCardIDs[otherChoice], -1, alphas[otherChoice] });
+            if (cardsInHand.Contains(chosenCard))
+            {
+                RemoveFromHand(chosenCard);
+                discarded++;
+                ChooseCardFromPopup(cardList, new() { 1, 1}, $"Take a card to add to your play area.", Next);
+            }
+            else
+            {
+                this.MultiFunction(nameof(MoveCard), RpcTarget.All,
+                    new object[3] { listOfCardIDs[storeChoice], -1, alphas[storeChoice] });
+                previousPlayer.MultiFunction(nameof(MoveCard), RpcTarget.All,
+                    new object[3] { listOfCardIDs[otherChoice], -1, alphas[otherChoice] });
+                Manager.instance.MultiFunction(nameof(Manager.NextTurn), RpcTarget.MasterClient);
+            }
         }
     }
 
@@ -245,8 +267,7 @@ public class Player : UndoSource
                 {
                     Card next = chosenCard;
                     needDecisions.Remove(next);
-                    DecisionMade(CarryVariables.instance.undecided);
-                    AddDecisionReact(Loop);
+                    AddDecisionReact(Loop, true);
                     next.BeforeScoring(this, 1);
                 }
             }
@@ -295,17 +316,15 @@ public class Player : UndoSource
 
     public void ChooseButton(List<string> possibleChoices, string changeInstructions, Action action)
     {
+        Manager.instance.Instructions(changeInstructions);
         Popup popup = Instantiate(CarryVariables.instance.textPopup);
         popup.StatsSetup(this, "Choices", new(0, -500));
 
         for (int i = 0; i < possibleChoices.Count; i++)
             popup.AddTextButton(possibleChoices[i]);
 
-        DecisionMade(CarryVariables.instance.undecided);
-        AddDecisionReact(() => Destroy(popup.gameObject));
-        AddDecisionReact(action);
-        Manager.instance.Instructions(changeInstructions);
-
+        AddDecisionReact(() => Destroy(popup.gameObject), action != null);
+        AddDecisionReact(action, false);
         popup.WaitForChoice();
     }
 
@@ -316,9 +335,8 @@ public class Player : UndoSource
         popup.transform.SetParent(this.transform);
         popup.StatsSetup(this, changeInstructions, Vector3.zero);
 
-        DecisionMade(CarryVariables.instance.undecided);
-        AddDecisionReact(Disable);
-        AddDecisionReact(action);
+        AddDecisionReact(Disable, action != null);
+        AddDecisionReact(action, false);
 
         for (int i = 0; i < listOfCards.Count; i++)
             popup.AddCardButton(listOfCards[i], listOfAlphas[i]);
@@ -337,9 +355,8 @@ public class Player : UndoSource
         Popup popup = null;
         IEnumerator haveCardsEnabled = KeepCardsOn();
 
-        DecisionMade(CarryVariables.instance.undecided);
-        AddDecisionReact(Disable);
-        AddDecisionReact(action);
+        AddDecisionReact(Disable, action != null);
+        AddDecisionReact(action, false);
 
         if (sideParameter != "")
         {
@@ -399,27 +416,20 @@ public class Player : UndoSource
 
     public void DecisionMade(int value, Card card = null)
     {
-        //Debug.Log($"decision: {value}");
+        chosenCard = card;
         choice = value;
-        this.chosenCard = card;
-        if (value == CarryVariables.instance.undecided)
-        {
-            decisionReact.Push(new());
-        }
-        else
-        {
-            try
-            {
-                List<Action> next = decisionReact.Pop();
-                foreach (Action action in next)
-                    action();
-            }
-            catch{}
-        }
+
+        List<Action> next = decisionReact.Pop();
+        foreach (Action action in next)
+            action();
     }
 
-    public void AddDecisionReact(Action action)
+    public void AddDecisionReact(Action action, bool newTrigger)
     {
+        if (action == null)
+            return;
+        if (decisionReact.Count == 0 || newTrigger)
+            decisionReact.Push(new());
         decisionReact.Peek().Add(action);
     }
 

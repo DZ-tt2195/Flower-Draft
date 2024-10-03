@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PlayAnother : Card
 {
@@ -19,14 +20,16 @@ public class PlayAnother : Card
 
     public override void BeforeScoring(Player player, int logged)
     {
-        player.ChooseCardOnScreen(player.cardsInHand, "", "Play a card from your hand.", Resolution);
+        player.ChooseCardOnScreen(player.cardsInHand.Where(card => card.myColor != Color.white).ToList(),
+            "", "Play a card from your hand.", Resolution);
 
         void Resolution()
         {
             try
             {
                 Card toPlay = player.chosenCard;
-                Log.instance.AddStep(1, player, this, nameof(CardInFront), new object[1] { toPlay.cardID });
+                Log.instance.AddStep(1, player, this, nameof(CardInFront),
+                    new object[1] { toPlay.cardID });
                 Log.instance.Continue();
                 player.DecisionMade(-1);
             }

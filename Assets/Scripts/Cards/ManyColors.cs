@@ -6,8 +6,8 @@ public class ManyColors : Card
 {
     protected override void SpecificSetup()
     {
-        textBox = "+1 VP per different color among all your cards.";
-        value = 2;
+        textBox = "-1 VP per color missing among your cards.";
+        value = 6;
         myColor = Color.yellow;
         myType = CardType.OnlyScoring;
     }
@@ -17,6 +17,6 @@ public class ManyColors : Card
         List<Color> colorCount = new();
         foreach (Card card in player.cardsPlayed)
             colorCount.Add(card.myColor);
-        return colorCount.Distinct().Count();
+        return 5 - colorCount.Distinct().Count();
     }
 }
