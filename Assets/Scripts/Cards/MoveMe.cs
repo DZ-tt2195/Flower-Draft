@@ -29,12 +29,12 @@ public class MoveMe : Card
             switch (options[player.choice])
             {
                 case "Left":
-                    Log.instance.AddStep(1, player, player, nameof(Player.MoveCard),
+                    Log.instance.AddStep(1, player, player, nameof(Player.PlayCard),
                         new object[3] { this.cardID, position - 1, (int)this.status });
                     Log.instance.Continue();
                     break;
                 case "Right":
-                    Log.instance.AddStep(1, player, player, nameof(Player.MoveCard),
+                    Log.instance.AddStep(1, player, player, nameof(Player.PlayCard),
                         new object[3] { this.cardID, position + 1, (int)this.status });
                     Log.instance.Continue();
                     break;

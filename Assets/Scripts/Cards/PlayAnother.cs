@@ -45,6 +45,6 @@ public class PlayAnother : Card
     {
         NextStep step = Log.instance.GetCurrentStep();
         int cardID = (int)step.infoToRemember[0];
-        step.player.MoveCard(cardID, 0, 1);
+        step.player.PlayCard(cardID, 0, 1);
     }
 }

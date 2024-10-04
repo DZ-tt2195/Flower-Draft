@@ -67,6 +67,7 @@ MonoBehaviour:
   - ChangeColor
   - CardInFront
   - IgnoreThatCard
+  - RemoveFromHand
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

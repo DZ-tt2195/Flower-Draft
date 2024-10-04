@@ -141,8 +141,10 @@ public class Player : UndoSource
         }
     }
 
-    void RemoveFromHand(Card card)
+    [PunRPC]
+    void RemoveFromHand(int cardID)
     {
+        Card card = Manager.instance.listOfCards[cardID];
         cardsInHand.Remove(card);
         StartCoroutine(card.MoveCard(new(0, -1000), 0.25f));
         SortHand();
@@ -174,7 +176,7 @@ public class Player : UndoSource
         void Resolution()
         {
             Card card = chosenCard;
-            RemoveFromHand(card);
+            MultiFunction(nameof(RemoveFromHand), RpcTarget.All, new object[1] { card.cardID });
             cardList.Add(card.cardID);
             Loop();
         }
@@ -187,7 +189,7 @@ public class Player : UndoSource
         MoveScreen();
         Player previousPlayer = Manager.instance.PrevPlayer(this);
         List<Card> cardList = new();
-        List<int> alphas = new() { 1, 0 };
+        List<float> alphas = new() { 1, 0 };
 
         for (int i = 0; i < listOfCardIDs.Length; i++)
             cardList.Add(Manager.instance.listOfCards[listOfCardIDs[i]]);
@@ -203,15 +205,15 @@ public class Player : UndoSource
 
             if (cardsInHand.Contains(chosenCard))
             {
-                RemoveFromHand(chosenCard);
                 discarded++;
-                ChooseCardFromPopup(cardList, new() { 1, 1}, $"Take a card to add to your play area.", Next);
+                MultiFunction(nameof(RemoveFromHand), RpcTarget.All, new object[1] { chosenCard.cardID });
+                ChooseCardFromPopup(cardList, new() { 1, 0.7f }, $"Take a card to add to your play area.", Next);
             }
             else
             {
-                this.MultiFunction(nameof(MoveCard), RpcTarget.All,
+                this.MultiFunction(nameof(PlayCard), RpcTarget.All,
                     new object[3] { listOfCardIDs[storeChoice], -1, alphas[storeChoice] });
-                previousPlayer.MultiFunction(nameof(MoveCard), RpcTarget.All,
+                previousPlayer.MultiFunction(nameof(PlayCard), RpcTarget.All,
                     new object[3] { listOfCardIDs[otherChoice], -1, alphas[otherChoice] });
                 Manager.instance.MultiFunction(nameof(Manager.NextTurn), RpcTarget.MasterClient);
             }
@@ -219,10 +221,10 @@ public class Player : UndoSource
     }
 
     [PunRPC]
-    public void MoveCard(int cardID, int position, int alpha)
+    public void PlayCard(int cardID, int position, int alpha)
     {
         Card card = Manager.instance.listOfCards[cardID];
-        cardsInHand.Remove(card);
+        RemoveFromHand(cardID);
         try
         {
             cardsPlayed.Remove(card);
@@ -282,7 +284,7 @@ public class Player : UndoSource
 
     public int CalculateScore()
     {
-        int total = 0;
+        int total = cardsInHand.Count;
         foreach (Card card in cardsPlayed)
             total += card.Scoring(this);
         return total;
@@ -328,7 +330,7 @@ public class Player : UndoSource
         popup.WaitForChoice();
     }
 
-    public void ChooseCardFromPopup(List<Card> listOfCards, List<int> listOfAlphas, string changeInstructions, Action action)
+    public void ChooseCardFromPopup(List<Card> listOfCards, List<float> listOfAlphas, string changeInstructions, Action action)
     {
         Manager.instance.Instructions(changeInstructions);
         Popup popup = Instantiate(CarryVariables.instance.cardPopup);
