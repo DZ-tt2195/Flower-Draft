@@ -6,7 +6,7 @@ public class ColorBeforeThis : Card
 {
     protected override void SpecificSetup()
     {
-        textBox = "If there are 2 or more gray cards before this, +6 VP.";
+        textBox = "If there are 2 or more black cards before this, +6 VP.";
         value = 0;
         myColor = Color.yellow;
         myType = CardType.OnlyScoring;
@@ -18,7 +18,7 @@ public class ColorBeforeThis : Card
         int counter = 0;
         for (int i = 0; i<thisPosition; i++)
         {
-            if (player.cardsPlayed[i].myColor == Color.gray)
+            if (player.cardsPlayed[i].myColor == Color.black)
                 counter++;
         }
 

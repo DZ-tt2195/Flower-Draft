@@ -8,7 +8,7 @@ public class AdjacentsDifferent : Card
     {
         textBox = "If one adjacent card is Revealed and the other is Concealed, +4 VP.";
         value = 2;
-        myColor = Color.gray;
+        myColor = Color.black;
         myType = CardType.OnlyScoring;
     }
 

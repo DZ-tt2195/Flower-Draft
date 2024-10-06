@@ -9,7 +9,7 @@ public class AdjacentsLargeValue : Card
     {
         textBox = "+1 VP per adjacent card with 4 or more value.";
         value = 4;
-        myColor = Color.green;
+        myColor = Color.red;
         myType = CardType.OnlyScoring;
     }
 

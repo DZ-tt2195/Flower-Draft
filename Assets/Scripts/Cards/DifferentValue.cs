@@ -8,7 +8,7 @@ public class DifferentValue : Card
     {
         textBox = "+1 VP per different value among all your cards.";
         value = 2;
-        myColor = Color.green;
+        myColor = Color.red;
         myType = CardType.OnlyScoring;
     }
 

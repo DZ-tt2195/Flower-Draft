@@ -6,7 +6,7 @@ public class ThisConcealed : Card
     {
         textBox = "If this is Concealed, -2 VP.";
         value = 6;
-        myColor = Color.gray;
+        myColor = Color.black;
         myType = CardType.OnlyScoring;
     }
 

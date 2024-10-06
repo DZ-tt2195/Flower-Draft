@@ -20,7 +20,7 @@ public class ChangeThisColor : Card
 
     public override void BeforeScoring(Player player, int logged)
     {
-        List<string> options = new() { "Gray", "Yellow", "Blue", "Green", "White"};
+        List<string> options = new() { "Black", "Yellow", "Blue", "Red", "White"};
 
         player.ChooseButton(options, $"Change this card's color", Resolution);
 
@@ -33,15 +33,14 @@ public class ChangeThisColor : Card
     }
 
     [PunRPC]
-    void ChangeColor()
+    void ChangeColor(string color)
     {
         NextStep step = Log.instance.GetCurrentStep();
-        string color = (string)step.infoToRemember[0];
 
         switch (color)
         {
-            case "Gray":
-                this.myColor = Color.gray;
+            case "Black":
+                this.myColor = Color.black;
                 break;
             case "Yellow":
                 this.myColor = Color.yellow;
@@ -49,8 +48,8 @@ public class ChangeThisColor : Card
             case "Blue":
                 this.myColor = Color.blue;
                 break;
-            case "Green":
-                this.myColor = Color.green;
+            case "Red":
+                this.myColor = Color.red;
                 break;
             case "White":
                 this.myColor = Color.white;

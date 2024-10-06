@@ -7,7 +7,7 @@ public class StatusLeast : Card
     {
         textBox = "+1 VP per Revealed or Concealed card you have, whichever is less.";
         value = 3;
-        myColor = Color.gray;
+        myColor = Color.black;
         myType = CardType.OnlyScoring;
     }
 

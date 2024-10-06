@@ -7,7 +7,7 @@ public class DescendingValue : Card
     {
         textBox = "If the previous card has a higher value than this, and the next card has a lower value than this, +3 VP.";
         value = 3;
-        myColor = Color.green;
+        myColor = Color.red;
         myType = CardType.OnlyScoring;
     }
 

@@ -8,7 +8,7 @@ public class AdjacentsSmallValue : Card
     {
         textBox = "+2 VP per adjacent card with 2 or less value.";
         value = 2;
-        myColor = Color.green;
+        myColor = Color.red;
         myType = CardType.OnlyScoring;
     }
 

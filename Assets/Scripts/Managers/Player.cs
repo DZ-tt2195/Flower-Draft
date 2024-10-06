@@ -221,7 +221,7 @@ public class Player : UndoSource
     }
 
     [PunRPC]
-    public void PlayCard(int cardID, int position, int alpha)
+    public void PlayCard(int cardID, int position, float alpha)
     {
         Card card = Manager.instance.listOfCards[cardID];
         RemoveFromHand(cardID);
@@ -236,7 +236,7 @@ public class Player : UndoSource
         }
 
         card.transform.SetParent(playArea);
-        card.ChangeStatus(this.playerPosition, alpha);
+        card.ChangeStatus(this.playerPosition, alpha == 0f ? 0 : 1);
         SortPlayArea();
     }
 
@@ -306,7 +306,7 @@ public class Player : UndoSource
         {
             Log.instance.pv.RPC(nameof(Log.instance.DeleteHistory), RpcTarget.All);
             foreach (NextStep step in listOfSteps)
-                Log.instance.AddStepForOthers(1, this, step.source, step.instruction, step.infoToRemember);
+                Log.instance.AddStepForOthers(1, this, step.source, step.instruction, step.parameters);
             listOfSteps.Clear();
         }
         Manager.instance.MultiFunction(nameof(Manager.PlayerDoneSharing), RpcTarget.MasterClient);
@@ -320,7 +320,7 @@ public class Player : UndoSource
     {
         Manager.instance.Instructions(changeInstructions);
         Popup popup = Instantiate(CarryVariables.instance.textPopup);
-        popup.StatsSetup(this, "Choices", new(0, -500));
+        popup.StatsSetup(this, "Choices", Vector3.zero);
 
         for (int i = 0; i < possibleChoices.Count; i++)
             popup.AddTextButton(possibleChoices[i]);
@@ -363,7 +363,7 @@ public class Player : UndoSource
         if (sideParameter != "")
         {
             popup = Instantiate(CarryVariables.instance.textPopup);
-            popup.StatsSetup(this, changeInstructions, new(0, -500));
+            popup.StatsSetup(this, changeInstructions, Vector3.zero);
             popup.AddTextButton(sideParameter);
             popup.WaitForChoice();
         }

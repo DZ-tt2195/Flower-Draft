@@ -16,14 +16,14 @@ public class NextStep
     public UndoSource source;
     public Player player;
     public string instruction;
-    public object[] infoToRemember;
+    public object[] parameters;
 
-    internal NextStep(Player player, UndoSource source, string instruction, object[] infoToRemember)
+    internal NextStep(Player player, UndoSource source, string instruction, object[] parameters)
     {
         this.player = player;
         this.source = source;
         this.instruction = instruction;
-        this.infoToRemember = infoToRemember;
+        this.parameters = parameters;
     }
 }
 
@@ -68,26 +68,26 @@ public class Log : UndoSource
         {
             currentStep++;
             NextStep nextUp = GetCurrentStep();
-            nextUp.source.MultiFunction(nextUp.instruction, null, new object[0]);
+            nextUp.source.MultiFunction(nextUp.instruction, null, nextUp.parameters);
         }
     }
 
-    public void AddStepForOthers(int insertion, Player player, UndoSource source, string instruction, object[] infoToRemember)
+    public void AddStepForOthers(int insertion, Player player, UndoSource source, string instruction, object[] parameters)
     {
-        pv.RPC(nameof(AddStep), RpcTarget.Others, insertion, player == null ? -1 : player.playerPosition, source == null ? -1 : source.pv.ViewID, instruction, infoToRemember);
+        pv.RPC(nameof(AddStep), RpcTarget.Others, insertion, player == null ? -1 : player.playerPosition, source == null ? -1 : source.pv.ViewID, instruction, parameters);
     }
 
     [PunRPC]
-    void AddStep(int insertion, int playerPosition, int source, string instruction, object[] infoToRemember)
+    void AddStep(int insertion, int playerPosition, int source, string instruction, object[] parameters)
     {
         AddStep(insertion, playerPosition < 0 ? null : Manager.instance.playersInOrder[playerPosition],
-            source < 0 ? null : PhotonView.Find(source).GetComponent<UndoSource>(), instruction, infoToRemember);
+            source < 0 ? null : PhotonView.Find(source).GetComponent<UndoSource>(), instruction, parameters);
         Continue();
     }
 
-    public void AddStep(int insertion, Player player, UndoSource source, string instruction, object[] infoToRemember)
+    public void AddStep(int insertion, Player player, UndoSource source, string instruction, object[] parameters)
     {
-        NextStep newStep = new(player, source, instruction, infoToRemember);
+        NextStep newStep = new(player, source, instruction, parameters);
 
         try
         {
@@ -116,4 +116,5 @@ public class Log : UndoSource
     }
 
     #endregion
+
 }

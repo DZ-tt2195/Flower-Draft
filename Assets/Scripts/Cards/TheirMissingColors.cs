@@ -17,11 +17,11 @@ public class TheirMissingColors : Card
     {
         Dictionary<Color, int> thisColor = new()
         {
-            { Color.gray, 0 },
+            { Color.black, 0 },
             { Color.blue, 0 },
             { Color.yellow, 0 },
             { Color.white, 0 },
-            { Color.green, 0 },
+            { Color.red, 0 },
         };
         foreach (Card card in player.cardsPlayed)
         {
@@ -30,11 +30,11 @@ public class TheirMissingColors : Card
 
         Dictionary<Color, int> theirColors = new()
         {
-            { Color.gray, 0 },
+            { Color.black, 0 },
             { Color.blue, 0 },
             { Color.yellow, 0 },
             { Color.white, 0 },
-            { Color.green, 0 },
+            { Color.red, 0 },
         };
         foreach (Card card in Manager.instance.NextPlayer(player).cardsPlayed)
         {

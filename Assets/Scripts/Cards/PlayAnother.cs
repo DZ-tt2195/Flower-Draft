@@ -41,10 +41,9 @@ public class PlayAnother : Card
     }
 
     [PunRPC]
-    void CardInFront()
+    void CardInFront(int cardID)
     {
         NextStep step = Log.instance.GetCurrentStep();
-        int cardID = (int)step.infoToRemember[0];
         step.player.PlayCard(cardID, 0, 1);
     }
 }

@@ -38,10 +38,8 @@ public class IgnoreAdjacent : Card
     }
 
     [PunRPC]
-    void IgnoreThatCard()
+    void IgnoreThatCard(int cardID)
     {
-        NextStep step = Log.instance.GetCurrentStep();
-        int cardID = (int)step.infoToRemember[0];
         Manager.instance.listOfCards[cardID].applyAbility = 0;
     }
 }

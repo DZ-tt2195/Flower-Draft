@@ -7,7 +7,7 @@ public class PairedValues : Card
     {
         textBox = "+1 VP per pair of adjacent cards with the same value.";
         value = 3;
-        myColor = Color.green;
+        myColor = Color.red;
         myType = CardType.OnlyScoring;
     }
 

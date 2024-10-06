@@ -24,7 +24,7 @@ public class Conceal : Card
             {
                 Card toConceal = player.chosenCard;
                 Log.instance.AddStep(1, player, toConceal, nameof(ChangeStatus),
-                    new object[2] { player.playerPosition, (int)Status.Concealed });
+                    new object[2] { player.playerPosition, 0 });
                 Log.instance.Continue();
             }
             player.DecisionMade(-1);

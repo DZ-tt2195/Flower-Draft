@@ -7,7 +7,7 @@ public class ThisRevealed : Card
     {
         textBox = "If this is Revealed, -2 VP.";
         value = 6;
-        myColor = Color.gray;
+        myColor = Color.black;
         myType = CardType.OnlyScoring;
     }
 

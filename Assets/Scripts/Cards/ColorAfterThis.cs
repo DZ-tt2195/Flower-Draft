@@ -4,7 +4,7 @@ public class ColorAfterThis : Card
 {
     protected override void SpecificSetup()
     {
-        textBox = "If there are 2 or more green cards after this, +6 VP.";
+        textBox = "If there are 2 or more red cards after this, +6 VP.";
         value = 0;
         myColor = Color.yellow;
         myType = CardType.OnlyScoring;
@@ -16,7 +16,7 @@ public class ColorAfterThis : Card
         int counter = 0;
         for (int i = thisPosition; i < player.cardsPlayed.Count; i++)
         {
-            if (player.cardsPlayed[i].myColor == Color.green)
+            if (player.cardsPlayed[i].myColor == Color.red)
                 counter++;
         }
 

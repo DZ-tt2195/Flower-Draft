@@ -8,7 +8,7 @@ public class AdjacentsConcealed : Card
     {
         textBox = "+1 VP per adjacent card that's Concealed.";
         value = 4;
-        myColor = Color.gray;
+        myColor = Color.black;
         myType = CardType.OnlyScoring;
     }
 

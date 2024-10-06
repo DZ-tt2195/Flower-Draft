@@ -15,11 +15,11 @@ public class ColorPair : Card
     {
         Dictionary<Color, int> colorCount = new()
         {
-            { Color.gray, 0 },
+            { Color.black, 0 },
             { Color.blue, 0 },
             { Color.yellow, 0 },
             { Color.white, 0 },
-            { Color.green, 0 },
+            { Color.red, 0 },
         };
 
         int exactlyTwo = 0;
